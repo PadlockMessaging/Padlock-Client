@@ -1,2 +1,2 @@
-# Padlock-Client
+# Padlock Messaging Client
 Padlock Messaging Client
