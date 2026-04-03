@@ -1,3 +1,21 @@
+/* 
+    Padlock Messaging Project
+    Copyright (C) <2026>  <Padlock Messaging>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/shell.dart';
@@ -13,7 +31,6 @@ void main() {
       systemNavigationBarColor: Colors.transparent,
       systemNavigationBarDividerColor: Colors.transparent,
       systemNavigationBarContrastEnforced: false,
-      statusBarColor: Colors.transparent,
     ));
   });
 
@@ -43,6 +60,11 @@ class PadlockApp extends StatelessWidget {
     return MaterialApp(
       title: 'Padlock Messaging', 
       theme: ThemeData(
+        appBarTheme: AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            systemNavigationBarIconBrightness: Brightness.dark, // dark icons on light theme
+          ),
+        ),
         brightness: Brightness.light,
         colorScheme: const ColorScheme.light(
           primary: Color(0xFFF9B233),
@@ -65,6 +87,11 @@ class PadlockApp extends StatelessWidget {
       ),
 
       darkTheme: ThemeData(
+        appBarTheme: AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            systemNavigationBarIconBrightness: Brightness.light, // light icons on dark theme
+          ),
+        ),
         brightness: Brightness.dark,
         colorScheme: const ColorScheme.dark(
           primary: Color(0xFFF9B233),

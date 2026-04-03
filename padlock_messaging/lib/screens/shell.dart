@@ -1,5 +1,26 @@
+/* 
+    Padlock Messaging Project
+    Copyright (C) <2026>  <Padlock Messaging>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 import 'package:flutter/material.dart';
 import 'package:padlock_messaging/screens/search.dart';
+import 'package:padlock_messaging/screens/settings.dart';
+import 'auth/welcome.dart';
+
 
 class Shell extends StatefulWidget {
   const Shell({super.key, required this.title});
@@ -55,6 +76,9 @@ class _ShellState extends State<Shell> {
     );
   }
 
+  void _navigateToSettings() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const Settings(title: 'Settings')));
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -66,10 +90,20 @@ class _ShellState extends State<Shell> {
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) {
-              // Handle selection
+              switch (value) {
+                case 'Settings':
+                  _navigateToSettings();
+                  break;
+                case 'Logout':
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                    );
+                  break;
+              }
             },
             itemBuilder: (BuildContext context) {
-              return {'Settings', 'Profile', 'Logout'}.map((String choice) {
+              return {'Settings', 'Logout'}.map((String choice) { 
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Text(choice),
