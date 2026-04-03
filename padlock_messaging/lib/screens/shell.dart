@@ -13,7 +13,7 @@ class _ShellState extends State<Shell> {
 
   int currentIndex = 0;
 
-  Widget _buildEmptyMessages() {
+  Widget _emptyMessages() {
     return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -34,7 +34,7 @@ class _ShellState extends State<Shell> {
     );
   }
 
-  Widget _buildEmptyContacts() {
+  Widget _emptyContacts() {
     return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -116,9 +116,9 @@ class _ShellState extends State<Shell> {
       ),
 
       body: switch (currentIndex) {
-        0 => _buildEmptyMessages(),
-        1 => _buildEmptyContacts(),
-        _ => _buildEmptyMessages(),
+        0 => _emptyMessages(),
+        1 => _emptyContacts(),
+        _ => _emptyMessages(),
       },
     );
   }

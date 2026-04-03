@@ -1,13 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'screens/shell.dart';
 
-void main() { runApp(const PadlockApp());}
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
+  // On API 31+ this needs to be called after the first frame too
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarContrastEnforced: false,
+      statusBarColor: Colors.transparent,
+    ));
+  });
+
+  runApp(const PadlockApp());
+}
 
 class PadlockApp extends StatelessWidget {
   const PadlockApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    
+    final isDark = MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarContrastEnforced: false,
+      systemNavigationBarIconBrightness:
+          isDark ? Brightness.light : Brightness.dark,
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness:
+          isDark ? Brightness.light : Brightness.dark,
+    ));
+
     return MaterialApp(
       title: 'Padlock Messaging', 
       theme: ThemeData(
