@@ -1,4 +1,4 @@
-package com.example.padlock_messaging
+package com.pmp.padlock_messaging
 
 import io.flutter.embedding.android.FlutterActivity
 
