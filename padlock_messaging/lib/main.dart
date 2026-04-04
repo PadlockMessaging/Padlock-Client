@@ -18,7 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'screens/auth/init.dart';
+import 'screens/auth/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -126,6 +126,6 @@ class PadlockApp extends StatelessWidget {
       ),
 
       themeMode: ThemeMode.system,
-      home: const Init());
+      home: const Welcome());
   }
 }

@@ -93,6 +93,7 @@ class DatabaseService {
     await db.insert(_tableSession, {
       'access_token': accessToken,
       'refresh_token': refreshToken,
+      'created_at': DateTime.now().millisecondsSinceEpoch,
     });
   }
 

@@ -19,7 +19,7 @@
 import 'package:flutter/material.dart';
 import 'package:padlock_messaging/screens/main/search.dart';
 import 'package:padlock_messaging/screens/main/settings.dart';
-import '../auth/init.dart';
+import '../auth/welcome.dart';
 import '../../services/auth_service.dart';
 
 
@@ -99,7 +99,7 @@ class _ShellState extends State<Shell> {
                     AuthService.logout();
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const Init()),
+                      MaterialPageRoute(builder: (context) => const Welcome()),
                     );
                   break;
               }

@@ -146,8 +146,8 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                       textAlign: TextAlign.center,
                       maxLength: 1,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 22,
                         fontWeight: FontWeight.w700,
                       ),
