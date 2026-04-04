@@ -18,10 +18,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'screens/shell.dart';
+import 'screens/auth/welcome.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
@@ -120,6 +126,6 @@ class PadlockApp extends StatelessWidget {
       ),
 
       themeMode: ThemeMode.system,
-      home: const Shell(title: 'Padlock Messaging'));
+      home: const Welcome());
   }
 }

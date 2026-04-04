@@ -18,6 +18,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../services/auth_service.dart';
+import '../main/shell.dart';
 
 class SmsVerificationPage extends StatefulWidget {
   final String phoneNumber;
@@ -32,25 +34,53 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
   final List<TextEditingController> _controllers =
       List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+  
+  bool _isLoading = false;
+  // ignore: unused_field
+  String? _error;
 
   void _onDigitEntered(String value, int index) {
     if (value.isNotEmpty && index < 5) {
       _focusNodes[index + 1].requestFocus();
     }
-    // Auto-verify when all 6 digits are filled
     if (_controllers.every((c) => c.text.isNotEmpty)) {
       _verify();
     }
   }
 
-  void _verify() {
-    // final code = _controllers.map((c) => c.text).join();
+  Future<void> _verify() async {
+    final code = _controllers.map((c) => c.text).join();
+    
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      await AuthService.verifySmsCode(code);
+
+      if (context.mounted) {
+        Navigator.pushAndRemoveUntil(
+          // ignore: use_build_context_synchronously
+          context,
+          MaterialPageRoute(
+            builder: (_) => const Shell(title: 'Padlock Messaging'),
+          ),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
   }
 
   @override
   void dispose() {
-    for (var c in _controllers) { c.dispose(); };
-    for (var f in _focusNodes) { f.dispose(); };
+    for (var c in _controllers) { c.dispose(); }
+    for (var f in _focusNodes) { f.dispose(); }
     super.dispose();
   }
 
@@ -92,7 +122,7 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                   children: [
                     const TextSpan(text: 'Code sent to '),
                     TextSpan(
-                      text: '+90 ${widget.phoneNumber}',
+                      text: widget.phoneNumber,
                       style: const TextStyle(
                           color: Color(0xFFF9B233),
                           fontWeight: FontWeight.bold),                        
@@ -116,8 +146,8 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                       textAlign: TextAlign.center,
                       maxLength: 1,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
                         fontSize: 22,
                         fontWeight: FontWeight.w700,
                       ),
@@ -171,7 +201,7 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: _verify,
+                  onPressed: _isLoading ? null : _verify,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: const Color(0xFF0A0A0A),
@@ -180,13 +210,22 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  child: const Text(
-                    'Confirm',
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: -0.3),
-                  ),
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            color: Color(0xFF0A0A0A),
+                          ),
+                        )
+                      : const Text(
+                          'Confirm',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: -0.3),
+                        ),
                 ),
               ),
               const SizedBox(height: 32),

@@ -20,6 +20,8 @@ import 'package:flutter/material.dart';
 import 'enter_phone.dart';
 import 'dart:math';
 import 'dart:async';
+import '../../services/auth_service.dart';
+import '../main/shell.dart';
 
 class _EncryptedTextEffect extends StatefulWidget {
   final String text;
@@ -108,85 +110,109 @@ class _EncryptedTextEffectState extends State<_EncryptedTextEffect> {
   }
 }
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class Welcome extends StatelessWidget {
+  const Welcome({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Spacer(flex: 2),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(14),
-                child: Image.asset(
-                  'assets/images/PadlockMP.png',
-                  width: 72,
-                  height: 72,
-                ),
-              ),
-              const SizedBox(height: 32),
-                _EncryptedTextEffect(
-                  text: 'Welcome to\nPadlock Messaging.',
-                  tapToScramble: true,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    fontSize: 42,
-                    fontWeight: FontWeight.w800,
-                    height: 1.1,
-                    letterSpacing: -1.5,
-                  ),
-                ),
-              const SizedBox(height:10),
-                _EncryptedTextEffect(
-                  text: 'Your secure communication\nstarts here.',
-                  tapToScramble: true,
-                  style: TextStyle(
-                    color: const Color(0xFF888888),
-                    fontSize: 16,
-                    height: 1.4,
-                  ),
-                ),
-              const Spacer(flex: 3),
-              // Phone login button
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const PhoneEntryPage()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: const Color(0xFF0A0A0A),
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+
+  return FutureBuilder<bool>(
+      future: AuthService.verifySession(),
+      builder: (context, snapshot) {
+        // Still checking
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        // Session exists → redirect to shell
+        if (snapshot.data == true) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => const Shell(title: "Padlock Messaging")),
+              (route) => false,
+            );
+          });
+        }
+    
+        return Scaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Spacer(flex: 2),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: Image.asset(
+                      'assets/images/PadlockMP.png',
+                      width: 72,
+                      height: 72,
                     ),
                   ),
-                  child: const Text(
-                    'Continue with Phone',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: -0.3,
+                  const SizedBox(height: 32),
+                    _EncryptedTextEffect(
+                      text: 'Welcome to\nPadlock Messaging.',
+                      tapToScramble: true,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 42,
+                        fontWeight: FontWeight.w800,
+                        height: 1.1,
+                        letterSpacing: -1.5,
+                      ),
+                    ),
+                  const SizedBox(height:10),
+                    _EncryptedTextEffect(
+                      text: 'Your secure communication\nstarts here.',
+                      tapToScramble: true,
+                      style: TextStyle(
+                        color: const Color(0xFF888888),
+                        fontSize: 16,
+                        height: 1.4,
+                      ),
+                    ),
+                  const Spacer(flex: 3),
+                  // Phone login button
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const PhoneEntryPage()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        foregroundColor: const Color(0xFF0A0A0A),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      child: const Text(
+                        'Continue with Phone',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
