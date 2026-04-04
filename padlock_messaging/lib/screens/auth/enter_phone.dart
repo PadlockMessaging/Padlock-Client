@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:padlock_messaging/tools/country_code.dart';
 import 'verify_phone.dart';
+import '../../services/auth_service.dart';
 
 class PhoneEntryPage extends StatefulWidget {
   const PhoneEntryPage({super.key});
@@ -32,7 +33,6 @@ class _PhoneEntryPageState extends State<PhoneEntryPage> {
   final TextEditingController _phoneController = TextEditingController();
   bool _isValid = false;
 
-  // Add this
   Country _selectedCountry = getCountryFromLocale();
 
   void _openCountryPicker() {
@@ -164,18 +164,32 @@ class _PhoneEntryPageState extends State<PhoneEntryPage> {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: _isValid
-                      ? () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => SmsVerificationPage(
-                                phoneNumber: _phoneController.text,
+                onPressed: _isValid
+                    ? () async {
+                        final phoneNumber = '${_selectedCountry.code}${_phoneController.text}';
+                        
+                        try {
+                          await AuthService.sendSmsCode(phoneNumber);
+
+                          if (context.mounted) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => SmsVerificationPage(
+                                  phoneNumber: phoneNumber,
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(e.toString())),
+                            );
+                          }
                         }
-                      : null,
+                      }
+                    : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFF9B233),
                     disabledBackgroundColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),

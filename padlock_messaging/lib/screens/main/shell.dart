@@ -17,9 +17,10 @@
 */
 
 import 'package:flutter/material.dart';
-import 'package:padlock_messaging/screens/search.dart';
-import 'package:padlock_messaging/screens/settings.dart';
-import 'auth/welcome.dart';
+import 'package:padlock_messaging/screens/main/search.dart';
+import 'package:padlock_messaging/screens/main/settings.dart';
+import '../auth/init.dart';
+import '../../services/auth_service.dart';
 
 
 class Shell extends StatefulWidget {
@@ -95,9 +96,10 @@ class _ShellState extends State<Shell> {
                   _navigateToSettings();
                   break;
                 case 'Logout':
+                    AuthService.logout();
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                      MaterialPageRoute(builder: (context) => const Init()),
                     );
                   break;
               }
