@@ -19,8 +19,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:padlock_messaging/tools/country_code.dart';
-import 'verify_phone.dart';
-import '../../services/auth_service.dart';
+import 'package:padlock_messaging/screens/auth/verify_phone.dart';
+import 'package:padlock_messaging/services/auth_service.dart';
 
 class PhoneEntryPage extends StatefulWidget {
   const PhoneEntryPage({super.key});

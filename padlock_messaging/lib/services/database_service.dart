@@ -26,6 +26,7 @@ class DatabaseService {
   static const _keyAlias = 'db_encryption_key';
   static const _dbName = 'session.db';
   static const _tableSession = 'session';
+  static const _tableUserInfo = 'user_info';
 
   static final _secureStorage = FlutterSecureStorage(
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
@@ -75,8 +76,13 @@ class DatabaseService {
         access_token TEXT NOT NULL,
         refresh_token TEXT NOT NULL,
         created_at INTEGER NOT NULL
-      )
-    ''');
+      ) ''');
+      
+        await db.execute('''
+      CREATE TABLE $_tableUserInfo (
+        name TEXT NOT NULL,
+        created_at INTEGER NOT NULL
+      ) ''');
       },
     );
   }
@@ -105,6 +111,26 @@ class DatabaseService {
     return {
       'access_token': rows.first['access_token'] as String,
       'refresh_token': rows.first['refresh_token'] as String,
+    };
+  }
+  
+  /// Inserts a new user info record.
+  static Future<void> insertUserInfo({required String name}) async {
+    final db = await database;
+    await db.delete(_tableUserInfo); // only one user info at a time
+    await db.insert(_tableUserInfo, {
+      'name': name,
+      'created_at': DateTime.now().millisecondsSinceEpoch,
+    });
+  }
+
+  /// Returns the stored user info or null if none exists.
+  static Future<Map<String, String>?> getUserInfo() async {
+    final db = await database;
+    final rows = await db.query(_tableUserInfo, limit: 1);
+    if (rows.isEmpty) return null;
+    return {
+      'name': rows.first['name'] as String,
     };
   }
 

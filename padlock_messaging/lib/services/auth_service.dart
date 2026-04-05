@@ -20,7 +20,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'database_service.dart';
+import 'package:padlock_messaging/services/database_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
@@ -124,7 +124,30 @@ class AuthService {
 
   /// Clears local session and signs out of Firebase.
   static Future<void> logout() async {
+    final session = await DatabaseService.getSession();
+    
+    if (session != null) {
+      await http.delete(
+        Uri.parse('$_apiBase/auth/v1/logout'),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'accept': 'application/json',
+          'Authorization': 'Bearer ${session['access_token']}',
+        },
+      );
+    }
+
     await DatabaseService.clearSession();
     await _auth.signOut();
+  }
+
+  // ─── User Info (e.g. name) ─────────────────────────────────────────────
+
+  static Future<Map<String, String>?> getUserInfo() async {
+    return await DatabaseService.getUserInfo();
+  }
+
+  static Future<void> setUserInfo({required String name}) async {
+    await DatabaseService.insertUserInfo(name: name);
   }
 }

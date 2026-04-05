@@ -17,32 +17,34 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:padlock_messaging/services/auth_service.dart';
+import 'package:padlock_messaging/screens/main/settings/user_info.dart';
 
-/// Flutter code sample for [ListTile].
-
-void main() => runApp(const SettingsApp());
-
-class SettingsApp extends StatelessWidget {
-  const SettingsApp({super.key});
+class Settings extends StatefulWidget {
+  const Settings({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(home: Settings(title: 'Settings'));
-  }
+  State<Settings> createState() => _SettingsState();
 }
 
-class Settings extends StatelessWidget {
-  const Settings({super.key, required this.title});
+class _SettingsState extends State<Settings> {
+  // ignore: unused_field
+  String _name = '';
 
-  final String title;
+  @override
+  void initState() {
+    super.initState();
+    _loadName();
+  }
 
-  Text accountName() {
-    return const Text('John Doe');
+  Future<void> _loadName() async {
+    final name = await AuthService.getUserInfo();
+    setState(() => _name = name?['name'] ?? '');
   }
 
   Text accountNameReturnInitials() {
-    final name = accountName().data;
-    final initials = name!.split(' ').map((word) => word[0]).join();
+    if (_name.isEmpty) return const Text('');
+    final initials = _name.split(' ').map((word) => word[0]).join();
     return Text(initials);
   }
   
@@ -57,9 +59,14 @@ class Settings extends StatelessWidget {
             minLeadingWidth: 50,
             leading: CircleAvatar(child: accountNameReturnInitials()),
             minVerticalPadding: 25,
-            title: accountName(),
+            title: Text(_name, style: const TextStyle(fontSize: 18)),
             subtitle: Text('View your information'),
-            onTap: () {
+            onTap: () async {
+              final updated = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const UserInfoPage(title: "Change your information")),
+              );
+              if (updated == true) _loadName();
             },
           ),
           InkWell(
