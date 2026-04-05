@@ -19,8 +19,8 @@
 import 'package:flutter/material.dart';
 import 'package:padlock_messaging/screens/main/search.dart';
 import 'package:padlock_messaging/screens/main/settings.dart';
-import '../auth/welcome.dart';
-import '../../services/auth_service.dart';
+import 'package:padlock_messaging/screens/auth/welcome.dart';
+import 'package:padlock_messaging/services/auth_service.dart';
 
 
 class Shell extends StatefulWidget {
@@ -78,7 +78,7 @@ class _ShellState extends State<Shell> {
   }
 
   void _navigateToSettings() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const Settings(title: 'Settings')));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const Settings()));
   }
   @override
   Widget build(BuildContext context) {
@@ -90,16 +90,18 @@ class _ShellState extends State<Shell> {
         title: Text(widget.title, style: const TextStyle(fontFamily: 'Roboto', fontSize: 20, fontWeight: FontWeight.w600)),
         actions: [
           PopupMenuButton<String>(
-            onSelected: (value) {
+            onSelected: (value) async {
               switch (value) {
                 case 'Settings':
                   _navigateToSettings();
                   break;
                 case 'Logout':
-                    AuthService.logout();
-                    Navigator.pushReplacement(
+                    await AuthService.logout();
+                    if (!context.mounted) return;
+                    Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => const Welcome()),
+                      (route) => false,
                     );
                   break;
               }

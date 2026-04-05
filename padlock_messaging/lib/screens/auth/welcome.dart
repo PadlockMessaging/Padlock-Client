@@ -17,11 +17,11 @@
 */
 
 import 'package:flutter/material.dart';
-import 'enter_phone.dart';
+import 'package:padlock_messaging/screens/auth/enter_phone.dart';
 import 'dart:math';
 import 'dart:async';
-import '../../services/auth_service.dart';
-import '../main/shell.dart';
+import 'package:padlock_messaging/services/auth_service.dart';
+import 'package:padlock_messaging/screens/main/shell.dart';
 
 class _EncryptedTextEffect extends StatefulWidget {
   final String text;

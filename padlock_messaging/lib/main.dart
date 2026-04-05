@@ -18,7 +18,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'screens/auth/welcome.dart';
+import 'package:padlock_messaging/screens/auth/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -32,17 +32,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-
-  // On API 31+ this needs to be called after the first frame too
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: Colors.transparent,
-      systemNavigationBarContrastEnforced: false,
-    ));
-  });
 
   runApp(const PadlockApp());
 }
@@ -63,18 +52,13 @@ class PadlockApp extends StatelessWidget {
       systemNavigationBarIconBrightness:
           isDark ? Brightness.light : Brightness.dark,
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness:
-          isDark ? Brightness.light : Brightness.dark,
+      statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
     ));
 
     return MaterialApp(
       title: 'Padlock Messaging', 
       theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          systemOverlayStyle: SystemUiOverlayStyle(
-            systemNavigationBarIconBrightness: Brightness.dark, // dark icons on light theme
-          ),
-        ),
+        appBarTheme: AppBarTheme(),
         brightness: Brightness.light,
         colorScheme: const ColorScheme.light(
           primary: Color(0xFFF9B233),
@@ -97,11 +81,7 @@ class PadlockApp extends StatelessWidget {
       ),
 
       darkTheme: ThemeData(
-        appBarTheme: AppBarTheme(
-          systemOverlayStyle: SystemUiOverlayStyle(
-            systemNavigationBarIconBrightness: Brightness.light, // light icons on dark theme
-          ),
-        ),
+        appBarTheme: AppBarTheme(),
         brightness: Brightness.dark,
         colorScheme: const ColorScheme.dark(
           primary: Color(0xFFF9B233),

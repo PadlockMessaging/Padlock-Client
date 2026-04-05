@@ -18,8 +18,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../services/auth_service.dart';
-import '../main/shell.dart';
+import 'package:padlock_messaging/services/auth_service.dart';
+import 'package:padlock_messaging/screens/main/shell.dart';
+import 'package:padlock_messaging/screens/auth/enter_name.dart';
 
 class SmsVerificationPage extends StatefulWidget {
   final String phoneNumber;
@@ -60,14 +61,22 @@ class _SmsVerificationPageState extends State<SmsVerificationPage> {
       await AuthService.verifySmsCode(code);
 
       if (context.mounted) {
-        Navigator.pushAndRemoveUntil(
-          // ignore: use_build_context_synchronously
-          context,
-          MaterialPageRoute(
-            builder: (_) => const Shell(title: 'Padlock Messaging'),
-          ),
-          (route) => false,
-        );
+        final userInfo = await AuthService.getUserInfo();
+        if (!context.mounted) return;
+
+        if (userInfo?['name'] == null || userInfo!['name']!.isEmpty) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => const NameEntryPage()),
+            (route) => false,
+          );
+        } else {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => const Shell(title: "Padlock Messaging")),
+            (route) => false,
+          );
+        }
       }
     } catch (e) {
       setState(() {
