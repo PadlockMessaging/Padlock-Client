@@ -21,14 +21,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'database_service.dart';
-import '../config.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
 class AuthService {
   static final _auth = FirebaseAuth.instance;
   static String? _verificationId;
 
-  static const _apiBase = apiBase;
+  static final _apiBase = dotenv.env['API'];
 
   // ─── Firebase SMS ─────────────────────────────────────────────────
 
